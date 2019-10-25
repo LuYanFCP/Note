@@ -1,0 +1,6 @@
+.vscode
+*.tfrecord
+*.tar.gz
+cifar
+data
+__pycache__
