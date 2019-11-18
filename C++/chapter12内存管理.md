@@ -171,3 +171,6 @@ void f(destination &d)
 + `w.expired()` 若w.use_count() 为0，返回true，否则返回false
 + `w.lock()` 如果expired为true， 返回一个空的shared_ptr，否则则返回w所指的shared_ptr
   
+## 动态数组
+
+分配一个空数组是合法的。
