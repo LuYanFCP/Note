@@ -84,7 +84,7 @@ with engine.create_execution_context() as context:
     cuda.memcpy_htod_async(d_input, h_input, stream)  # 从h to d
     # Run inference.
     context.execute_async(bindings=[int(d_input), int(d_output)], stream_handle=stream.handle)
-    # Transfer predictions back from the GPU.
+    # Transfer predictions back from the    GPU.
     cuda.memcpy_dtoh_async(h_output, d_output, stream)
     # Synchronize the stream
     stream.synchronize()
@@ -106,5 +106,12 @@ with open("sample.engine", "wb") as f:
 with open(“sample.engine”, “rb”) as f, trt.Runtime(TRT_LOGGER) as runtime:
     engine = runtime.deserialize_cuda_engine(f.read())
 ```
+
+## 衍生工具集
+
+`onnx-tensorRT`: 使用onnx模型进行转换和使用onnx模型。
+`pytorch-tensorRT`: 直接使得pytorch模型可以在tensorRT上部署的一个包。
+
+> 对pytorch的疑问，这个是如何做到如此高效的，我自己实现的效果很差，吞吐和比使用torch快一点。
 
 > https://docs.nvidia.com/deeplearning/sdk/tensorrt-api/python_api
