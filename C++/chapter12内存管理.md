@@ -188,3 +188,36 @@ sp.reset() // 使用lambda释放
 
 new 将申请内存、创建对象和初始化结合在一起。
 申请内存和创建对象进行分离。使用allocator类
+
++ `allocator<T> a` 定义了一个名字为a的allocator对象，它可以为类型为T的对象分配内存。
++ `a.allocate(n)` 分配一段原始的未定义的、未构造的内存，保持n个类型为T的对象。
++ `a.deallocate()` 释放了从T*指针p中的地址开始的内存，这块内存保存了n个类型为T的对象；p必须是一个先有allocate申请返回的内存指针，n必须是p创建时的大小。在调用deallocate之前，用户必须对每个在这块内存上创建的对象调用destroy。
++ `a.construct(p, args)` p必须是一个类型为`T*`的指针，只想一块原始的内存； arg 被传递给类型为T的构造函数，用来在p指向的内存构造一个对象。
++ `a.destroy(p)` p为`T*`类型的指针，此算法
+
+```c++
+allocator<string> alloc;
+auto const p = alloc.allocate(n); // 申请n个string的空间，但是没有构造
+auto q = p; // 一个指针做之后的指示
+alloc.construct(q++, "hello world!");
+alloc.construct(q++, 10, "cpp"); // 重复10次
+
+while (q != p)
+    alloc.destroy(--q); // 将构造好的对象进行销毁，调用析构函数
+
+alloc.deallocate(p, n); // 释放n个空间
+```
+
+#### 拷贝与填充
+
++ `uninitialized_copy(b, e, b2)` 从迭代器b和e指出的输入范围中拷贝原始到迭代器b2指定的未构造的原始内存中。b2指定的未构造的原始内存中。b2指向的内存必须足够大的能容纳。
++ `uninitialized_copy(b, n, b2)` 从迭代器b指向的元素开始，拷贝n个元素到b2开始的内存
++ `uninitialized_copy(b, e, t)`  在迭代器b和e指定的原始内存范围中创建对象，对象的之均为t的拷贝。
++ `uninitialized_copy(b, n, t)` 
+
+```c++ 
+auto p = alloc.allocate(v1.size() * 2);
+auto q = uninitialized_copy(vi.begin(), vi.end(), p);
+uninitialized_fill_n(q, vi.size(), 42); // 类似fill_n的用法
+```
+
