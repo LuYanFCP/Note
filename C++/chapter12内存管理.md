@@ -174,3 +174,17 @@ void f(destination &d)
 ## 动态数组
 
 分配一个空数组是合法的。
+
+使用智能指针管理数组必须要使用lambda自定义一个free函数来帮助free内存，如果不定义，则是未定义行为。例如在声明一个shared_ptr指针时
+
+```c++
+shared_ptr<int> sp(new int[10], [](int *p) {delete[] p;});
+sp.reset() // 使用lambda释放
+```
+
+智能指针未提供响应的`[]`操作，因此需要使用`sp.get()`然后使用指针的`[]`s
+
+### allocator类
+
+new 将申请内存、创建对象和初始化结合在一起。
+申请内存和创建对象进行分离。使用allocator类
