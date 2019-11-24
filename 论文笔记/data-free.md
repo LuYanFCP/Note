@@ -115,3 +115,5 @@ $$\boldsymbol{\beta}_{i} \pm n \cdot \boldsymbol{\gamma}_{i}$$ n=6
 剪切的最小值为0(ReLU)
 
 结果
+
+![20191124200208.png](https://i.loli.net/2019/11/24/G1gcB5OAV3UwQaL.png)
