@@ -122,9 +122,82 @@ def add(n):
 
 需要使用`gobal`与`nonlocal`将变量绑定到当前作用域下，即可修改。`gobal`用于绑定全局变量，`nonlocal`用于邦定`local`变量
 
+# 闭包
+
+**闭包指延伸其作用域的函数，其中包含函数定义体中引用、但是不在定义体中定义的非全局变量。闭包是一种函数，它会保留定义函数时存在的自由变量的绑定，这样调用函数时，虽然定义作用域不可用了，但是仍能使用那些绑定。**
+
+## 一个简单的例子
+
+如果有一个函数`avg`，它的作用是不断计算系列值的均值；例如整个历史重平均收盘价，每天都会增加新价格，因此平均值要考虑至目前为止所有的价格。
+
+例如
+
+```python
+avg(10)
+10.0
+avg(11)
+10.5
+avg(12)
+11.0
+```
+
+avg从何而来，它又在哪里保存历史值，为了实现它，我们实现一个简单的`class`版本
+
+```python
+class Averager():
+    def __init__(self):
+        self.series = []
+
+    def __call__(self, new_value):
+        self.series.append(new_value)
+        total = sum(self.series)
+        return total / len(self.series)
+
+>> avg = Averager()
+>> avg(10)
+10.0
+>> avg(11)
+10.5
+>> avg(12)
+11.0
+```
+
+同样我们可以使用高阶函数实现
+
+```python
+def Averager():
+    series = []
+    def averager(new_value):
+        series.append(new_value)
+        total = sum(series)
+        return total / len(series)
+    return averager
+
+>> avg = Averager()
+>> avg(10)
+10.0
+>> avg(11)
+10.5
+>> avg(12)
+11.0
+```
+
+注意到在使用高阶函数`series`是`Averager`的局部变量，课是在avg得到时候`Averager`已经范围，本地作用于与已经消失，这个时候内层的`averager`函数的作用域就多一个自由变量`series`，也就是`averager`延申到自己函数作用域之外。
+
+```python
+In [9]: avg.__code__.co_varnames
+Out[9]: ('new_value', 'total')
+
+In [10]: avg.__code__.co_freevars
+Out[10]: ('series',)
+```
+
+其中`series`绑定在返回的avg函数的`__closure__`属性中。这些元素是`cell`对象，有一个`cell_contents`属性，保存着真正的值。因此`avg`是闭包。
 
 参考
 -----
 https://docs.python.org/zh-cn/3/tutorial/classes.html#python-scopes-and-namespaces
 
 https://www.cnblogs.com/crazyrunning/p/6914080.html
+
+《流畅的python》
