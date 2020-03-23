@@ -108,7 +108,7 @@ private:
     // +--------------辅助函数-----------------------+
     // +-------------------------------------------+
     node* moveRedLeft(node* h) {
-        flipColors(h); // 不同
+        mflipColors(h); // 不同
         if (isRed(h->right->left)) {
             h->right = rotateRight(h->right);
             h = rotateLeft(h);
@@ -116,7 +116,7 @@ private:
         return h;
     }
     node* moveRedRight(node* h) {
-        flipColors(h); // 不同
+        mflipColors(h); // 不同
         if (!isRed(h->left->left)) {
             h = rotateRight(h);
         }
